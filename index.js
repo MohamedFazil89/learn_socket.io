@@ -3,8 +3,7 @@ import { Server } from 'socket.io';
 import { urlencoded, static as staticMiddleware } from "express";
 import { fileURLToPath } from 'url';
 import { dirname, join } from "path";
-import { arch } from "os";
-
+import bodyParser from "body-parser";
 // start code
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,6 +17,8 @@ app.use(urlencoded({ extended: true }));
 app.set('views', join(__dirname, 'views'));
 
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(staticMiddleware(join(__dirname, "public")));
 
@@ -70,10 +71,20 @@ io.on('connection', (socket) => {
 
 });
 
+var usernamedisplay = '';
+
+app.post("/login", (req, res) => {
+    usernamedisplay = req.body.username;
+    res.redirect("/GetIn");
+});
 
 
 app.get("/", (req, res) => {
-    res.render("index.ejs",{
-        usersno: users
-    });
+    res.render("login.ejs");
 });
+
+app.get("/GetIn", (req, res) =>{
+    res.render("index.ejs", {
+        Username: usernamedisplay
+    })
+})
