@@ -63,6 +63,8 @@
 </head>
 
 <body>
+    <h5>no:
+    <span id="count"></span></h5>
     <ul id="messages"></ul>
     <form id="form" action="">
         <input id="input" autocomplete="off" />
@@ -91,6 +93,11 @@
                 socket.connect();
             }
         });
+
+        socket.on('userCount', (count) => {
+                // Update the displayed user count
+                document.getElementById('count').textContent = count;
+            });
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();

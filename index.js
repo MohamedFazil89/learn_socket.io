@@ -29,8 +29,13 @@ const io = new Server(server, {
     connectionStateRecovery: {}
 });
 
+var users = 0;
+
 io.on('connection', (socket) => {
-    console.log("a user connected");
+    users++;
+    console.log(`a user connected user no: ${users}`);
+    io.emit('userCount', users);
+
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat message', msg);
@@ -45,6 +50,9 @@ io.on('connection', (socket) => {
       });
     socket.on('disconnect',()=>{
         console.log('user disconnected');
+        users--;
+        io.emit('userCount', users);
+
     });
 
 
@@ -65,5 +73,7 @@ io.on('connection', (socket) => {
 
 
 app.get("/", (req, res) => {
-    res.render("index.ejs");
+    res.render("index.ejs",{
+        usersno: users
+    });
 });
